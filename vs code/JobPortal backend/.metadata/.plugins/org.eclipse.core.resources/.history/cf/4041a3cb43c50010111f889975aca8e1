@@ -1,0 +1,73 @@
+package com.jobporta.service;
+
+import com.jobporta.dto.ApplyJobRequest;
+import com.jobporta.entity.JobApplication;
+import com.jobporta.repository.JobApplicationRepository;
+import com.jobporta.utility.FileUploadUtil;
+import com.jobporta.utility.Utilites;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class JobApplicationServiceImpl implements JobApplicationService {
+
+    private final JobApplicationRepository repo;
+
+    @Override
+    public JobApplication applyForJob(ApplyJobRequest request) throws Exception {
+
+        String resumePath = null;
+
+        if (request.getResume() != null && !request.getResume().isEmpty()) {
+            resumePath = FileUploadUtil.saveResume(request.getResume());
+        }
+
+        Long appId = Utilites.getNextSequence("jobApplications");
+
+        JobApplication app = JobApplication.builder()
+                .id(appId)
+                .userId(request.getUserId())
+                .jobId(request.getJobId())
+                .fullName(request.getFullName())
+                .email(request.getEmail())
+                .address(request.getAddress())
+                .role(request.getRole())
+                .previousEmployers(request.getPreviousEmployers())
+                .countryCode(request.getCountryCode())
+                .phone(request.getPhone())
+                .skills(request.getSkills())
+                .availability(request.getAvailability())
+                .resumePath(resumePath)
+
+                // 🆕 DEFAULT STATUS
+                .status(request.getStatus() != null ? request.getStatus() : "APPLIED")
+                .build();
+
+        return repo.save(app);
+    }
+
+    @Override
+    public List<JobApplication> getApplicationsByUser(String userId) {
+        return repo.findByUserId(userId);
+    }
+
+    // 🆕 UPDATE STATUS
+    @Override
+    public JobApplication updateStatus(Long applicationId, String status) {
+        JobApplication app = repo.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application Not Found"));
+
+        app.setStatus(status);
+        return repo.save(app);
+    }
+
+    // 🆕 GET ONE APPLICATION
+    @Override
+    public JobApplication getById(Long applicationId) {
+        return repo.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application Not Found"));
+    }
+}

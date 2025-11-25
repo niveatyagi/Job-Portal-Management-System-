@@ -1,0 +1,165 @@
+package com.jobporta.service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jobporta.dto.ApplicantDTO;
+import com.jobporta.dto.Application;
+import com.jobporta.dto.ApplicationStatus;
+import com.jobporta.dto.JobDTO;
+import com.jobporta.dto.JobStatus;
+import com.jobporta.entity.Applicant;
+import com.jobporta.entity.Job;
+import com.jobporta.exception.JobPortalException;
+import com.jobporta.repository.JobRepository;
+import com.jobporta.utility.Utilites;
+
+
+
+@Service("jobService")
+public class JobServiceImpl implements JobService {
+
+    @Autowired
+    private JobRepository jobRepository;
+
+    @Override
+    public JobDTO postJob(JobDTO jobDTO) throws JobPortalException {
+        if(jobDTO.getId() == 0) {
+            jobDTO.setId(Utilites.getNextSequence("jobs"));
+            jobDTO.setPostTime(LocalDateTime.now());
+        } else {
+            Job job = jobRepository.findById(jobDTO.getId()).orElseThrow(() -> new JobPortalException("JOB_NOT_FOUND"));
+            if (job.getJobStatus().equals(JobStatus.DRAFT) || jobDTO.getJobStatus().equals(JobStatus.CLOSE)) {
+                jobDTO.setPostTime(LocalDateTime.now());
+            }
+        }
+        return jobRepository.save(jobDTO.toEntity()).toDTO();
+    }
+
+    @Override
+    public List<JobDTO> getAllJobs() {
+        return jobRepository.findAll()
+            .stream()
+            .map(x -> x.toDTO())
+            .toList();
+    }
+
+    @Override
+    public JobDTO getJob(Long id) throws JobPortalException {
+        return jobRepository.findById(id)
+            .orElseThrow(() -> new JobPortalException("JOB_NOT_FOUND"))
+            .toDTO();
+    }
+
+    @Override
+    public void applyJob(Long id, ApplicantDTO applicantDTO) throws JobPortalException {
+        Job job = jobRepository.findById(id).orElseThrow(() -> new JobPortalException("JOB_NOT_FOUND"));
+        List<Applicant> applicants = job.getApplicants();
+        if (applicants == null) applicants = new ArrayList<>();
+
+        // Duplicate application check
+        if (applicants.stream()
+                .filter(x -> x.getApplicantId() == applicantDTO.getApplicantId())
+                .toList().size() > 0) {
+            throw new JobPortalException("JOB_APPLIED_ALREADY");
+        }
+
+        applicantDTO.setApplicationStatus(ApplicationStatus.APPLIED);
+        applicants.add(applicantDTO.toEntity());
+        job.setApplicants(applicants);
+        jobRepository.save(job);
+    }
+
+
+	@Override
+	public List<JobDTO> getJobsPostedBy(Long id) {
+	    return jobRepository.findByPostedBy(id)
+	        .stream()
+	        .map(x -> x.toDTO())
+	        .toList();
+	}
+
+	@Override
+	public void changeAppStatus(Application application) throws JobPortalException {
+	    Job job = jobRepository.findById(application.getId())
+	        .orElseThrow(() -> new JobPortalException("JOB_NOT_FOUND"));
+	    List<Applicant> applicants = job.getApplicants().stream().map((x) -> {
+	        if (application.getApplicantId().equals(x.getApplicantId())) {
+	            x.setApplicationStatus(application.getApplicationStatus());
+	            if (application.getApplicationStatus().equals(ApplicationStatus.INTERVIEWED)) {
+	                x.setInterviewTime(application.getInterviewTime());
+	            }
+	        }
+	        return x;
+	    }).toList();
+	    job.setApplicants(applicants);
+	    jobRepository.save(job);
+	}
+
+	@Override
+	public List<JobDTO> filterJobs(
+	        String role,
+	        String location,
+	        String experience,
+	        String jobType,
+	        Long minSalary,
+	        Long maxSalary
+	) {
+	    return jobRepository.findAll()
+	        .stream()
+	        .filter(job -> {
+	            if (role != null) {
+	                List<String> roles = List.of(role.split(","));
+	                if (job.getJobTitle() == null
+	                        || roles.stream().noneMatch(r -> r.equalsIgnoreCase(job.getJobTitle()))) {
+	                    return false;
+	                }
+	            }
+	            return true;
+	        })
+	        .filter(job -> {
+	            if (location != null) {
+	                List<String> locations = List.of(location.split(","));
+	                if (job.getLocation() == null
+	                        || locations.stream().noneMatch(l -> l.equalsIgnoreCase(job.getLocation()))) {
+	                    return false;
+	                }
+	            }
+	            return true;
+	        })
+	        .filter(job -> {
+	            if (experience != null) {
+	                List<String> exp = List.of(experience.split(","));
+	                if (job.getExperience() == null
+	                        || exp.stream().noneMatch(e -> e.equalsIgnoreCase(job.getExperience()))) {
+	                    return false;
+	                }
+	            }
+	            return true;
+	        })
+	        .filter(job -> {
+	            if (jobType != null) {
+	                List<String> types = List.of(jobType.split(","));
+	                if (job.getJobType() == null
+	                        || types.stream().noneMatch(t -> t.equalsIgnoreCase(job.getJobType()))) {
+	                    return false;
+	                }
+	            }
+	            return true;
+	        })
+	        .filter(job -> minSalary == null || 
+	                (job.getPackageOffered() != null && job.getPackageOffered() >= minSalary))
+	        .filter(job -> maxSalary == null || 
+	                (job.getPackageOffered() != null && job.getPackageOffered() <= maxSalary))
+	        .filter(job -> job.getJobStatus() != null && job.getJobStatus().toString().equalsIgnoreCase("ACTIVE"))
+	        .map(Job::toDTO)
+	        .toList();
+	}
+
+	
+
+}

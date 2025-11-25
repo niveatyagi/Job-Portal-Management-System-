@@ -1,0 +1,24 @@
+spring.application.name=Job-Portal
+spring.data.mongodb.auto-index-creation=true
+spring.data.mongodb.uri=mongodb://localhost:27017/JobPortal
+
+
+spring.servlet.multipart.max-file-size=20MB
+spring.servlet.multipart.max-request-size=20MB
+
+#Email properties
+
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=nishrao13@gmail.com
+spring.mail.password=igzgexrzhotoufqx
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+USER_FOUND= User has  registered already.
+USER_NOT_FOUND=user is not registered.
+INVALID_CREDENTIALS=Invalid credentials.
+OTP_NOT_FOUND=OTP is expired.
+OTP_INCORRECT=OTP is incorrect.
+
+JOB_NOT_FOUND=Job not  found.

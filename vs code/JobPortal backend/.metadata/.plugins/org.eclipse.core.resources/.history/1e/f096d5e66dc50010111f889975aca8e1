@@ -1,0 +1,35 @@
+package com.jobporta.entity;
+
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Document(collection = "job_applications")
+public class JobApplication {
+
+    @Id
+    private String id;   
+    private String userId;
+    private String jobId;
+
+    private String fullName;
+    private String email;
+    private String address;
+    private String role;
+
+    private List<String> previousEmployers;
+    private String countryCode;
+    private String phone;
+    private List<String> skills;
+    private String availability;
+
+    private String resumePath;
+    
+    private String status = "APPLIED"; 
+}

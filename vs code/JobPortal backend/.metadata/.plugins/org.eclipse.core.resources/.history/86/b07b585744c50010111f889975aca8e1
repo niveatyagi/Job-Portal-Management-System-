@@ -1,0 +1,17 @@
+package com.jobporta.service;
+
+import com.jobporta.dto.ApplyJobRequest;
+import com.jobporta.entity.JobApplication;
+
+import java.util.List;
+
+public interface JobApplicationService {
+    JobApplication applyForJob(ApplyJobRequest request) throws Exception;
+    List<JobApplication> getApplicationsByUser(String userId);
+
+    // 🆕 ADD THIS
+    JobApplication updateStatus(Long applicationId, String status);
+
+    // optional if you need single fetch
+    JobApplication getById(Long applicationId);
+}

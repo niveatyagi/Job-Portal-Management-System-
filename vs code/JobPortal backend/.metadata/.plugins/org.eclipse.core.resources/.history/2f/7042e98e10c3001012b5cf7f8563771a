@@ -1,0 +1,33 @@
+package com.jobporta.api;
+
+import com.jobporta.service.JobService;
+import com.jobporta.dto.JobDTO;
+import com.jobporta.exception.JobPortalException;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+
+@RestController
+@CrossOrigin
+@Validated
+@RequestMapping("/jobs")
+public class JobAPI {
+    @Autowired
+    private JobService jobService;
+
+    @PostMapping("/post")
+    public ResponseEntity<JobDTO> postJob(@RequestBody @Validated JobDTO jobDTO) throws JobPortalException {
+        return new ResponseEntity<>(jobService.postJob(jobDTO), HttpStatus.CREATED);
+    }
+    
+    @GetMapping("/getAll")
+    public ResponseEntity<List<JobDTO>> getAllJobs() throws JobPortalException {
+        return new ResponseEntity<>(jobService.getAllJobs(), HttpStatus.OK);
+    }
+
+}

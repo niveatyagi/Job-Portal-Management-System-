@@ -1,0 +1,19 @@
+package com.jobporta.service;
+
+import com.jobporta.dto.ApplyJobRequest;
+import com.jobporta.entity.JobApplication;
+
+import java.util.List;
+
+public interface JobApplicationService {
+
+    JobApplication applyForJob(ApplyJobRequest request) throws Exception;
+
+    List<JobApplication> getApplicationsByUser(String userId);
+
+    // Correct ID type → String
+    JobApplication updateStatus(String applicationId, String status);
+
+    // Correct ID type → String
+    JobApplication getById(String applicationId);
+}

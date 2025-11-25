@@ -1,0 +1,28 @@
+package com.jobporta.dto;
+
+import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
+@Data
+public class ApplyJobRequest {
+
+    private String userId;
+    private String jobId;
+
+    private String fullName;
+    private String email;
+    private String address;
+    private String role;
+
+    private List<String> previousEmployers;   // LIST TYPE
+    private String countryCode;
+    private String phone;
+
+    private List<String> skills;              // LIST TYPE
+    private String availability;
+
+    private MultipartFile resume;
+    private String status;
+}

@@ -1,0 +1,130 @@
+package com.jobporta.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jobporta.dto.ProfileDTO;
+import com.jobporta.dto.ProfileSearchRequest;
+import com.jobporta.entity.Profile;
+import com.jobporta.exception.JobPortalException;
+import com.jobporta.repository.ProfileRepository;
+import com.jobporta.utility.Utilites;
+
+@Service("profileService")
+public class ProfileServiceImpl implements ProfileService {
+
+    @Autowired
+    private ProfileRepository profileRepository;
+
+    @Override
+    public Long createProfile(String email) throws JobPortalException {
+        Profile profile = new Profile();
+        profile.setId(Utilites.getNextSequence("profiles"));
+        profile.setEmail(email);
+        profile.setSkills(new ArrayList<>());
+        profile.setExperiences(new ArrayList<>());
+        profile.setCertifications(new ArrayList<>());
+        profileRepository.save(profile);
+        return profile.getId(); // ✅ Important
+ }
+
+    @Override
+    public ProfileDTO getProfile(Long id) throws JobPortalException {
+        return profileRepository.findById(id)
+                .orElseThrow(() -> new JobPortalException("PROFILE_NOT_FOUND"))
+                .toDTO();
+    }
+
+    @Override
+    public ProfileDTO updateProfile(ProfileDTO profileDTO) throws JobPortalException {
+
+        profileRepository.findById(profileDTO.getId())
+                .orElseThrow(() -> new JobPortalException("PROFILE_NOT_FOUND"));
+
+        Profile savedProfile = profileRepository.save(profileDTO.toEntity());
+
+        return savedProfile.toDTO();
+    }
+
+
+@Override
+public List<ProfileDTO> getAllProfiles()  {
+    return profileRepository.findAll()
+            .stream()
+            .map(Profile::toDTO)
+            .toList(); // Java 16+
+}
+@Override
+public List<ProfileDTO> searchProfiles(ProfileSearchRequest request) {
+    return profileRepository.findAll()
+        .stream()
+        .filter(profile -> {
+
+            boolean matches = false;
+
+            // Name
+            if (request.getName() != null && !request.getName().trim().isEmpty()) {
+                matches |= profile.getName() != null &&
+                        profile.getName().toLowerCase().contains(request.getName().toLowerCase());
+            }
+
+            // Location
+            if (request.getLocation() != null && !request.getLocation().trim().isEmpty()) {
+                matches |= profile.getLocation() != null &&
+                        profile.getLocation().equalsIgnoreCase(request.getLocation());
+            }
+
+            // Job Title
+            if (request.getJobTitle() != null && !request.getJobTitle().trim().isEmpty()) {
+                matches |= profile.getJobTitle() != null &&
+                        profile.getJobTitle().equalsIgnoreCase(request.getJobTitle());
+            }
+
+            // Company
+            if (request.getCompany() != null && !request.getCompany().trim().isEmpty()) {
+                matches |= profile.getCompany() != null &&
+                        profile.getCompany().equalsIgnoreCase(request.getCompany());
+            }
+
+            // Skills
+            if (request.getSkills() != null && !request.getSkills().isEmpty()) {
+                matches |= profile.getSkills() != null &&
+                        profile.getSkills().containsAll(request.getSkills());
+            }
+
+            // Min Salary
+            if (request.getMinSalary() != null && request.getMinSalary() > 0) {
+                matches |= profile.getExpectedSalary() != null &&
+                        profile.getExpectedSalary() >= request.getMinSalary();
+            }
+
+            // Max Salary
+            if (request.getMaxSalary() != null && request.getMaxSalary() > 0) {
+                matches |= profile.getExpectedSalary() != null &&
+                        profile.getExpectedSalary() <= request.getMaxSalary();
+            }
+
+            // Min Experience
+            if (request.getMinExperience() != null && request.getMinExperience() > 0) {
+                matches |= profile.getTotalExperience() != null &&
+                        profile.getTotalExperience() >= request.getMinExperience();
+            }
+
+            // Max Experience
+            if (request.getMaxExperience() != null && request.getMaxExperience() > 0) {
+                matches |= profile.getTotalExperience() != null &&
+                        profile.getTotalExperience() <= request.getMaxExperience();
+            }
+
+            return matches;
+        })
+        .map(Profile::toDTO)
+        .toList();
+}
+
+
+}
+

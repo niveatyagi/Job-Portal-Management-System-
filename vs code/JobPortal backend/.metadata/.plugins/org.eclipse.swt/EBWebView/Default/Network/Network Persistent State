@@ -1,0 +1,1 @@
+{"net":{"http_server_properties":{"servers":[{"anonymization":["FAAAABAAAABodHRwczovL2lldGYub3Jn",false,0],"network_stats":{"srtt":8463},"server":"https://tools.ietf.org"}],"supports_quic":{"address":"192.168.1.151","used_quic":true},"version":5},"network_qualities":{"CAISABiAgICA+P////8B":"4G","CAYSABiAgICA+P////8B":"Offline"}}}

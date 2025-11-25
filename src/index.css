@@ -1,0 +1,19 @@
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- Reset CSS ---- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body bg as mine-shaft-950 */
+html, body, #root {
+  height: 100%;
+  background-color: theme('colors.mine-shaft.950'); 
+}

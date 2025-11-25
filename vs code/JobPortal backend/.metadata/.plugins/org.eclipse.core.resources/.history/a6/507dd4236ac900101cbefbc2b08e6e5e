@@ -1,0 +1,24 @@
+package com.jobporta.service;
+
+import java.util.List;
+
+import com.jobporta.dto.ApplicantDTO;
+import com.jobporta.dto.Application;
+import com.jobporta.dto.JobDTO;
+import com.jobporta.exception.JobPortalException;
+
+public interface JobService {
+
+	public JobDTO postJob(JobDTO jobDTO) throws JobPortalException;
+
+	public List<JobDTO> getAllJobs();
+
+	public JobDTO getJob(Long id)throws JobPortalException;
+
+	public void applyJob(Long id, ApplicantDTO applicantDTO) throws JobPortalException;
+
+	public List<JobDTO> getJobsPostedBy(Long id);
+
+	public void changeAppStatus(Application application) throws JobPortalException;
+   
+}

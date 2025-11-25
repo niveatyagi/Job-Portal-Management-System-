@@ -1,0 +1,108 @@
+package com.jobporta.service;
+
+import com.jobporta.dto.ApplyJobRequest;
+import com.jobporta.entity.JobApplication;
+import com.jobporta.repository.JobApplicationRepository;
+import com.jobporta.utility.FileUploadUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class JobApplicationServiceImpl implements JobApplicationService {
+
+    private final JobApplicationRepository repo;
+
+    private static final List<String> VALID_STATUSES =
+            List.of("APPLIED", "REVIEWING", "SELECTED", "REJECTED");
+
+    @Override
+    public JobApplication applyForJob(ApplyJobRequest request) throws Exception {
+
+        if (request == null) {
+            throw new IllegalArgumentException("Request cannot be null");
+        }
+
+        if (request.getUserId() == null || request.getJobId() == null) {
+            throw new IllegalArgumentException("User ID and Job ID cannot be null");
+        }
+
+        if (request.getFullName() == null || request.getFullName().isBlank()) {
+            throw new IllegalArgumentException("Full name is required");
+        }
+
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+
+        String resumePath = null;
+
+        if (request.getResume() != null && !request.getResume().isEmpty()) {
+            resumePath = FileUploadUtil.saveResume(request.getResume());
+        }
+
+        JobApplication app = JobApplication.builder()
+                .userId(request.getUserId())
+                .jobId(request.getJobId())
+                .fullName(request.getFullName())
+                .email(request.getEmail())
+                .address(request.getAddress())
+                .role(request.getRole())
+                .previousEmployers(request.getPreviousEmployers())
+                .countryCode(request.getCountryCode())
+                .phone(request.getPhone())
+                .skills(request.getSkills())
+                .availability(request.getAvailability())
+                .resumePath(resumePath)
+                .status("APPLIED")
+                .build();
+
+        return repo.save(app);
+    }
+
+    @Override
+    public JobApplication updateStatus(String applicationId, String status) {
+
+        if (status == null || status.isBlank()) {
+            throw new IllegalArgumentException("Status cannot be empty");
+        }
+
+        if (!VALID_STATUSES.contains(status)) {
+            throw new IllegalArgumentException("Invalid status: " + status);
+        }
+
+        JobApplication app = repo.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application Not Found"));
+
+        app.setStatus(status);
+        return repo.save(app);
+    }
+
+    @Override
+    public JobApplication getById(String applicationId) {
+        return repo.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application Not Found"));
+    }
+
+    @Override
+    public List<JobApplication> getApplicationsByUser(String userId) {
+
+        if (userId == null || userId.isBlank()) {
+            throw new IllegalArgumentException("User ID cannot be empty");
+        }
+
+        return repo.findByUserId(userId);
+    }
+
+    @Override
+    public List<JobApplication> getApplicationsByJob(String jobId) {
+
+        if (jobId == null || jobId.isBlank()) {
+            throw new IllegalArgumentException("Job ID cannot be empty");
+        }
+
+        return repo.findByJobId(jobId);
+    }
+}

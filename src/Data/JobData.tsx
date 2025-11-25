@@ -1,0 +1,148 @@
+import { IconBriefcase, IconMapPin, IconRecharging, IconSearch } from "@tabler/icons-react";
+
+export const dropdownData = [
+  {
+    title: "Job Title",
+    icon: IconSearch,
+    options: [
+      "Designer",
+      "Developer",
+      "Product Manager",
+      "Marketing Specialist",
+      "Data Analyst",
+      "Sales Executive",
+      "Content Writer",
+      "Customer Support",
+    ],
+  },
+  {
+    title: "Location",
+    icon: IconMapPin,
+    options: [
+      "Delhi",
+      "New York",
+      "San Francisco",
+      "London",
+      "Berlin",
+      "Tokyo",
+      "Sydney",
+      "Toronto",
+    ],
+  },
+  {
+    title: "Experience",
+    icon: IconBriefcase,
+    options: ["Entry Level", "Intermediate", "Expert"],
+  },
+  {
+    title: "Job Type",
+    icon: IconRecharging,
+    options: ["Full Time", "Part Time", "Contract", "Freelance", "Internship"],
+  },
+];
+
+export const jobList = [
+  {
+    id:1,
+    jobTitle: "Product Designer",
+    company: "Meta",
+    applicants: 25,
+    experience: "Entry Level",
+    jobType: "Full-Time",
+    location: "New York",
+    package: "32 LPA",
+    postedDaysAgo: 12,
+    description:
+      "Meta is seeking a Product Designer to join our team. You'll be working on designing user-centric interfaces for our blockchain wallet platform. This is an excellent opportunity for entry-level designers to grow their skills in a dynamic environment.",
+  },
+  {
+    id:2,
+    jobTitle: "Sr. UX Designer",
+    company: "Netflix",
+    applicants: 14,
+    experience: "Expert",
+    jobType: "Part-Time",
+    location: "San Francisco",
+    package: "40 LPA",
+    postedDaysAgo: 5,
+    description:
+      "Netflix is looking for a Sr. UX Designer to enhance our user experience on streaming platforms. Ideal candidates will have extensive experience in user research and interaction design, helping us to deliver engaging content to our global audience.",
+  },
+  { id:3,
+    jobTitle: "Product Designer",
+    company: "Microsoft",
+    applicants: 58,
+    experience: "Intermediate",
+    jobType: "Full-Time",
+    location: "Remote",
+    package: "36 LPA",
+    postedDaysAgo: 9,
+    description:
+      "Microsoft requires a Product Designer for their cloud tools division. You will collaborate with cross-functional teams and work on state-of-the-art design systems for global products.",
+  },
+  {
+    id:4,
+    jobTitle: "Backend Developer",
+    company: "Google",
+    applicants: 21,
+    experience: "Entry Level",
+    jobType: "Full-Time",
+    location: "Bangalore",
+    package: "38 LPA",
+    postedDaysAgo: 8,
+    description:
+      "Google is hiring a Backend Developer to join our team in Bangalore. You'll be responsible for developing scalable backend systems that power our services. This role requires strong problem-solving skills and experience with modern backend technologies.",
+  },
+  {
+    id:5,
+    jobTitle: "SMM Manager",
+    company: "Spotify",
+    applicants: 73,
+    experience: "Intermediate",
+    jobType: "Full-Time",
+    location: "Delhi",
+    package: "34 LPA",
+    postedDaysAgo: 8,
+    description:
+      "Spotify is looking for a Social Media Marketing Manager to strategize and lead our online campaigns. Candidates should have a background in digital marketing and analytics.",
+  },
+  {
+    id:6,
+    jobTitle: "Graphic Designer",
+    company: "Adobe",
+    applicants: 30,
+    experience: "Intermediate",
+    jobType: "Full-Time",
+    location: "San Francisco",
+    package: "33 LPA",
+    postedDaysAgo: 7,
+    description:
+      "Adobe is looking for a Graphic Designer to help create visually stunning digital media campaigns. Experience with Adobe Suite is a must.",
+  },
+  {
+    id:7,
+    jobTitle: "Cloud Solutions Architect",
+    company: "Amazon",
+    applicants: 42,
+    experience: "Expert",
+    jobType: "Full-Time",
+    location: "Seattle",
+    package: "45 LPA",
+    postedDaysAgo: 10,
+    description:
+      "Amazon is seeking a Cloud Solutions Architect to design scalable cloud infrastructure. Candidate should be proficient with AWS services and architecture patterns.",
+  },
+  {
+    id:8,
+    jobTitle: "iOS Developer",
+    company: "Apple",
+    applicants: 50,
+    experience: "Intermediate",
+    jobType: "Full-Time",
+    location: "Cupertino",
+    package: "40 LPA",
+    postedDaysAgo: 6,
+    description:
+      "Apple is hiring an iOS Developer to build innovative mobile applications. Familiarity with Swift and iOS SDK is required.",
+  },
+];
