@@ -1,19 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { setItem, getItem, removeItem } from "../Services/LocalStorageService";
-
-const initialUser = getItem("user") || null;
 
 const UserSlice = createSlice({
   name: "user",
-  initialState: initialUser,
+  initialState: null,
   reducers: {
     setUser: (state, action) => {
-      setItem("user", action.payload);   // ⭐ persist user
-      return action.payload;
+      return action.payload;  // No localStorage
     },
     removeUser: () => {
-      removeItem("user");                // ⭐ remove on logout
-      return null;
+      return null;            // No localStorage
     },
   },
 });
